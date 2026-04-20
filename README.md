@@ -1,3 +1,5 @@
+![PullbackTrader](public/ForPosts(Yellow).png)
+
 <h1 align="center">Trade360Lab-SpreadBot</h1>
 
 <p align="center">
