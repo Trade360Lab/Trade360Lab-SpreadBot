@@ -1,3 +1,8 @@
+from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+
 from logger import configure_logging
 from market_data import LiveDataRecorder
 from settings import get_settings

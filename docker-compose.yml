@@ -1,1 +1,27 @@
-services: {}
+services:
+  live_bot:
+    build: .
+    command: python scripts/run_live.py
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./reports:/app/reports
+
+  telegram_bot:
+    build: .
+    command: python scripts/run_telegram_bot.py
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+
+  recorder:
+    build: .
+    command: python scripts/record_data.py
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
