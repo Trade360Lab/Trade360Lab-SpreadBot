@@ -1,1 +1,9 @@
-optimization: {}
+app:
+  config_name: optimization
+
+optimizer:
+  train_days: 3
+  test_days: 1
+  step_days: 1
+  n_trials: 30
+  timeout_seconds: 600

@@ -1,2 +1,68 @@
 app:
   name: spreadbot
+  env: dev
+  exchange: bybit
+  symbol: BTCUSDT
+  market_type: linear
+  data_dir: ./data
+  log_dir: ./logs
+  dry_run: true
+  live_trading_enabled: false
+  enable_telegram: false
+  enable_telegram_trade_control: false
+
+fees:
+  maker_fee_bps: 1.0
+  taker_fee_bps: 5.5
+
+risk:
+  max_inventory: 0.02
+  hard_inventory_limit: 0.03
+  emergency_flatten_pnl: -250.0
+  emergency_flatten_inventory: 0.025
+  max_data_staleness_seconds: 2.5
+  max_volatility_bps: 35.0
+  toxicity_threshold: 0.7
+
+strategy:
+  order_size: 0.001
+  min_spread_bps: 2.0
+  max_spread_bps: 12.0
+  volatility_multiplier: 1.5
+  inventory_skew_coefficient: 0.75
+  cancel_edge_bps: 0.8
+  max_quote_age_seconds: 3.0
+  quote_levels: 1
+  imbalance_window: 50
+  trade_flow_window: 100
+  volatility_window: 100
+  alpha_clip: 3.0
+  alpha_threshold: 0.02
+
+backtest:
+  initial_cash: 100000.0
+  latency_ms: 120
+  fill_probability: 0.35
+  queue_ahead_size: 1.5
+  report_dir: ./reports/backtest
+
+optimizer:
+  train_days: 3
+  test_days: 1
+  step_days: 1
+  n_trials: 20
+  timeout_seconds: 300
+  dd_penalty: 2.0
+  inventory_penalty: 0.5
+  taker_penalty: 20.0
+
+data:
+  historical_lookback_days: 7
+  recorder_flush_seconds: 10
+  channels:
+    - trades
+    - orderbook
+    - candles
+    - mark_price
+    - funding
+    - metadata

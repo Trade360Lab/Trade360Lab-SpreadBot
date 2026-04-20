@@ -1,1 +1,14 @@
-backtest: {}
+app:
+  config_name: backtest
+
+backtest:
+  report_dir: ./reports/backtest
+  latency_ms: 120
+  fill_probability: 0.4
+
+data:
+  channels:
+    - trades
+    - orderbook
+    - candles
+    - mark_price

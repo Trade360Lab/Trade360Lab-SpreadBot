@@ -1,1 +1,16 @@
-live: {}
+app:
+  config_name: live
+  dry_run: true
+  live_trading_enabled: false
+
+risk:
+  max_data_staleness_seconds: 2.0
+  max_volatility_bps: 30.0
+
+strategy:
+  max_quote_age_seconds: 2.5
+  cancel_edge_bps: 0.7
+
+live:
+  loop_interval_ms: 500
+  heartbeat_seconds: 60
