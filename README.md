@@ -1,12 +1,15 @@
-# SpreadBot
+<h1 align="center">Trade360Lab-SpreadBot</h1>
 
-Practical market making / spread-capture bot for Bybit linear perpetuals, with parquet market-data storage, event-driven backtest, rolling WFA, Optuna search, dry-run live runtime and Telegram monitoring.
+<p align="center">
+Практический market making / spread-capture бот для Bybit linear perpetual с хранением данных в parquet,
+event-driven бэктестом, rolling WFA, Optuna-оптимизацией, dry-run/live runtime и Telegram-мониторингом.
+</p>
 
-## Status
+<h2 align="center">Статус</h2>
 
-The workspace provided for this build was empty, so the current repository is a full baseline implementation rather than a literal refactor of pre-existing strategy code. The architecture stays intentionally compact and keeps the strategy in one file.
+Исходный workspace для этой сборки был пустым, поэтому текущий репозиторий представляет собой полноценную рабочую baseline-реализацию, а не буквальный рефактор уже существующего локального кода стратегии. Архитектура намеренно оставлена компактной, а стратегическая логика собрана в одном файле.
 
-## Structure
+<h2 align="center">Структура</h2>
 
 ```text
 repo/
@@ -24,7 +27,7 @@ repo/
   tests/
 ```
 
-## Install
+<h2 align="center">Установка</h2>
 
 ```bash
 python3 -m venv .venv
@@ -33,9 +36,9 @@ pip install -e .[dev]
 cp .env.example .env
 ```
 
-## Env Variables
+<h2 align="center">Переменные Окружения</h2>
 
-Required / important:
+Ключевые переменные:
 
 - `APP_ENV`
 - `LOG_LEVEL`
@@ -75,7 +78,7 @@ Required / important:
 - `LIVE_LOOP_INTERVAL_MS`
 - `LATENCY_MS`
 
-## Local Commands
+<h2 align="center">Локальные Команды</h2>
 
 ```bash
 make install
@@ -89,7 +92,7 @@ make live
 make telegram
 ```
 
-Direct entrypoints:
+Прямые entrypoints:
 
 ```bash
 python scripts/download_data.py
@@ -101,50 +104,50 @@ python scripts/run_live.py
 python scripts/run_telegram_bot.py
 ```
 
-## Data Workflow
+<h2 align="center">Работа С Данными</h2>
 
-Historical download:
+Загрузка исторических данных:
 
 ```bash
 python scripts/download_data.py
 ```
 
-Live recorder:
+Запись live-потока:
 
 ```bash
 python scripts/record_data.py
 ```
 
-Stored format:
+Формат хранения:
 
 - `parquet`
-- partitioned as `data/raw/exchange=.../symbol=.../channel=.../date=...`
-- normalized schema: `timestamp, exchange, symbol, channel, side, price, size, payload`
+- партиционирование: `data/raw/exchange=.../symbol=.../channel=.../date=...`
+- нормализованная схема: `timestamp, exchange, symbol, channel, side, price, size, payload`
 
-## Backtest
+<h2 align="center">Бэктест</h2>
 
 ```bash
 python scripts/run_backtest.py
 ```
 
-Artifacts:
+Артефакты:
 
 - `reports/backtest/backtest_summary.json`
 - `reports/backtest/backtest_fills.csv`
 - `reports/backtest/backtest_equity.csv`
 - `reports/backtest/backtest_report.md`
 
-Backtest model includes:
+Модель бэктеста включает:
 
-- event replay over trades/orderbook/mark price data
-- maker-only fill approximation
-- post-only quote logic
-- queue-ahead approximation
+- replay рыночных событий по trades/orderbook/mark price
+- приближение maker-fill логики
+- post-only quoting
+- approximation очереди исполнения
 - latency-aware cancel logic
-- realized and unrealized inventory PnL
+- realized/unrealized inventory PnL
 - adverse selection diagnostics
 
-## WFA And Optimization
+<h2 align="center">WFA И Оптимизация</h2>
 
 Rolling WFA:
 
@@ -158,44 +161,44 @@ Optuna:
 python scripts/run_optuna.py
 ```
 
-Objective:
+Целевая функция:
 
 ```text
 score = net_pnl - a * max_drawdown - b * inventory_variance - c * taker_ratio
 ```
 
-## Live Runtime
+<h2 align="center">Live Runtime</h2>
 
-Dry-run by default:
+Dry-run по умолчанию:
 
 ```bash
 python scripts/run_live.py
 ```
 
-Real trading becomes possible only when all of the following are true:
+Реальная торговля возможна только если одновременно выполнены все условия:
 
 - `LIVE_TRADING_ENABLED=true`
 - `DRY_RUN=false`
-- `BYBIT_API_KEY` and `BYBIT_API_SECRET` are set
+- заданы `BYBIT_API_KEY` и `BYBIT_API_SECRET`
 
-Safety controls:
+Защитные механизмы:
 
-- stale-data guard
-- extreme-volatility guard
-- hard inventory limit
-- kill switch on emergency conditions
-- cancel-all on shutdown
-- post-only order placement
+- защита от stale data
+- защита от экстремальной волатильности
+- жёсткий лимит inventory
+- kill switch при аварийных условиях
+- cancel-all при shutdown
+- post-only выставление заявок
 
-## Telegram
+<h2 align="center">Telegram</h2>
 
-Start the bot:
+Запуск бота:
 
 ```bash
 python scripts/run_telegram_bot.py
 ```
 
-Supported commands:
+Поддерживаемые команды:
 
 - `/status`
 - `/position`
@@ -205,36 +208,36 @@ Supported commands:
 - `/lastfills`
 - `/health`
 
-Trade-state-changing commands are disabled unless `ENABLE_TELEGRAM_TRADE_CONTROL=true`.
+Команды, меняющие торговое состояние, отключены, пока `ENABLE_TELEGRAM_TRADE_CONTROL=true` не включён явно.
 
-## Docker
+<h2 align="center">Docker</h2>
 
-Build and start:
+Сборка и запуск:
 
 ```bash
 docker compose up --build
 ```
 
-Services:
+Сервисы:
 
 - `live_bot`
 - `telegram_bot`
 - `recorder`
 
-## Tests
+<h2 align="center">Тесты</h2>
 
 ```bash
 pytest
 ```
 
-Coverage focus:
+Покрытие сфокусировано на:
 
-- config loading
-- signal and quoting math
+- загрузке конфигов
+- сигналах и quoting math
 - inventory skew
-- backtest smoke path
+- smoke-сценарии бэктеста
 - live risk checks
 
-## Risk Warning
+<h2 align="center">Предупреждение О Рисках</h2>
 
-Live trading is dangerous. This repository defaults to safe mode, but configuration mistakes, exchange-side behavior, network failures, and model errors can still cause losses. Validate on testnet and in dry-run before any live capital is exposed.
+Live trading связан с риском реальных убытков. Репозиторий по умолчанию запускается в safe mode, но ошибки конфигурации, поведение биржи, сетевые сбои и ошибки модели всё равно могут привести к потерям. Перед любым live-запуском обязательно проверьте всё на testnet и в dry-run режиме.
