@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -173,6 +174,10 @@ def _load_yaml(path: str | Path) -> dict[str, Any]:
     return loaded
 
 
+def _env_or_default(env: EnvSettings, key: str, fallback: Any) -> Any:
+    return getattr(env, key) if key in os.environ else fallback
+
+
 def load_settings(config_path: str | None = None) -> Settings:
     env = EnvSettings()
     base_config = _load_yaml("./configs/base.yaml")
@@ -199,41 +204,41 @@ def load_settings(config_path: str | None = None) -> Settings:
         app=app,
         fees=FeeConfig(**{
             **merged.get("fees", {}),
-            "maker_fee_bps": env.MAKER_FEE_BPS,
-            "taker_fee_bps": env.TAKER_FEE_BPS,
+            "maker_fee_bps": _env_or_default(env, "MAKER_FEE_BPS", merged.get("fees", {}).get("maker_fee_bps", 1.0)),
+            "taker_fee_bps": _env_or_default(env, "TAKER_FEE_BPS", merged.get("fees", {}).get("taker_fee_bps", 5.5)),
         }),
         risk=RiskConfig(**{
             **merged.get("risk", {}),
-            "max_inventory": env.MAX_INVENTORY,
-            "hard_inventory_limit": env.HARD_INVENTORY_LIMIT,
-            "emergency_flatten_pnl": env.EMERGENCY_FLATTEN_PNL,
-            "emergency_flatten_inventory": env.EMERGENCY_FLATTEN_INVENTORY,
-            "max_data_staleness_seconds": env.MAX_DATA_STALENESS_SECONDS,
-            "max_volatility_bps": env.MAX_VOLATILITY_BPS,
-            "toxicity_threshold": env.TOXICITY_THRESHOLD,
+            "max_inventory": _env_or_default(env, "MAX_INVENTORY", merged.get("risk", {}).get("max_inventory", 0.02)),
+            "hard_inventory_limit": _env_or_default(env, "HARD_INVENTORY_LIMIT", merged.get("risk", {}).get("hard_inventory_limit", 0.03)),
+            "emergency_flatten_pnl": _env_or_default(env, "EMERGENCY_FLATTEN_PNL", merged.get("risk", {}).get("emergency_flatten_pnl", -250.0)),
+            "emergency_flatten_inventory": _env_or_default(env, "EMERGENCY_FLATTEN_INVENTORY", merged.get("risk", {}).get("emergency_flatten_inventory", 0.025)),
+            "max_data_staleness_seconds": _env_or_default(env, "MAX_DATA_STALENESS_SECONDS", merged.get("risk", {}).get("max_data_staleness_seconds", 2.5)),
+            "max_volatility_bps": _env_or_default(env, "MAX_VOLATILITY_BPS", merged.get("risk", {}).get("max_volatility_bps", 35.0)),
+            "toxicity_threshold": _env_or_default(env, "TOXICITY_THRESHOLD", merged.get("risk", {}).get("toxicity_threshold", 0.7)),
         }),
         strategy=StrategyConfig(**{
             **merged.get("strategy", {}),
-            "order_size": env.ORDER_SIZE,
-            "min_spread_bps": env.MIN_SPREAD_BPS,
-            "max_spread_bps": env.MAX_SPREAD_BPS,
-            "volatility_multiplier": env.VOLATILITY_MULTIPLIER,
-            "inventory_skew_coefficient": env.INVENTORY_SKEW_COEFFICIENT,
-            "cancel_edge_bps": env.CANCEL_EDGE_BPS,
-            "max_quote_age_seconds": env.MAX_QUOTE_AGE_SECONDS,
+            "order_size": _env_or_default(env, "ORDER_SIZE", merged.get("strategy", {}).get("order_size", 0.001)),
+            "min_spread_bps": _env_or_default(env, "MIN_SPREAD_BPS", merged.get("strategy", {}).get("min_spread_bps", 2.0)),
+            "max_spread_bps": _env_or_default(env, "MAX_SPREAD_BPS", merged.get("strategy", {}).get("max_spread_bps", 12.0)),
+            "volatility_multiplier": _env_or_default(env, "VOLATILITY_MULTIPLIER", merged.get("strategy", {}).get("volatility_multiplier", 1.5)),
+            "inventory_skew_coefficient": _env_or_default(env, "INVENTORY_SKEW_COEFFICIENT", merged.get("strategy", {}).get("inventory_skew_coefficient", 0.75)),
+            "cancel_edge_bps": _env_or_default(env, "CANCEL_EDGE_BPS", merged.get("strategy", {}).get("cancel_edge_bps", 0.8)),
+            "max_quote_age_seconds": _env_or_default(env, "MAX_QUOTE_AGE_SECONDS", merged.get("strategy", {}).get("max_quote_age_seconds", 3.0)),
         }),
         backtest=BacktestConfig(**{
             **merged.get("backtest", {}),
-            "latency_ms": env.LATENCY_MS,
+            "latency_ms": _env_or_default(env, "LATENCY_MS", merged.get("backtest", {}).get("latency_ms", 120)),
         }),
         optimizer=OptimizerConfig(**merged.get("optimizer", {})),
         data=DataConfig(**{
             **merged.get("data", {}),
-            "historical_lookback_days": env.HISTORICAL_LOOKBACK_DAYS,
+            "historical_lookback_days": _env_or_default(env, "HISTORICAL_LOOKBACK_DAYS", merged.get("data", {}).get("historical_lookback_days", 7)),
         }),
         live=LiveConfig(**{
             **merged.get("live", {}),
-            "loop_interval_ms": env.LIVE_LOOP_INTERVAL_MS,
+            "loop_interval_ms": _env_or_default(env, "LIVE_LOOP_INTERVAL_MS", merged.get("live", {}).get("loop_interval_ms", 500)),
         }),
     )
 

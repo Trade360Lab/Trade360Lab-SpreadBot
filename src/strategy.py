@@ -189,9 +189,10 @@ class SpreadCaptureStrategy:
         half_spread_bps = self.compute_half_spread_bps(market, alpha)
         inventory_skew_bps = self.compute_inventory_skew_bps(state)
         bid_size, ask_size = self.compute_sizes(state, alpha)
+        reservation_price = fair_value * (1 - bps_to_decimal(inventory_skew_bps))
 
-        bid_price = fair_value * (1 - bps_to_decimal(half_spread_bps - inventory_skew_bps))
-        ask_price = fair_value * (1 + bps_to_decimal(half_spread_bps + inventory_skew_bps))
+        bid_price = reservation_price * (1 - bps_to_decimal(half_spread_bps))
+        ask_price = reservation_price * (1 + bps_to_decimal(half_spread_bps))
         emergency_action = self.emergency_action(market, state)
         if emergency_action:
             eligible = False
